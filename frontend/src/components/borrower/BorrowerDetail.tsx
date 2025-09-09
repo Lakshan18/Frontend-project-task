@@ -47,39 +47,40 @@ export const BorrowerDetail = ({ borrower }: BorrowerDetailProps) => {
   return (
     <div className="space-y-6">
       <div className="border-b border-slate-200 pb-6">
-        <div className="flex flex-row justify-between items-start">
-          <div className='flex flex-col justify-start'>
-            <h2 className=" sm:text-[14px] font-bold text-slate-900">{borrower.name}</h2>
-            <div className="flex flex-col justify-start mt-2 text-slate-600">
-              <span className="flex items-center">
-                <Mail className="h-4 w-4 mr-1 text-slate-400" />
-                {borrower.email}
-              </span>
-              <span className="flex items-center">
-                <Phone className="h-4 w-4 mr-1 text-slate-400" />
-                {borrower.phone}
-              </span>
-            </div>
-            <p className="text-xl font-bold text-blue-900 mt-3">
-              ${borrower.loan_amount?.toLocaleString()}
-            </p>
+        <div className='flex flex-col justify-start'>
+          <div className='flex flex-row items-center justify-between'>
+            <h2 className="text-[24px] font-bold text-slate-900">{borrower.name}</h2>
+            <Badge
+              variant="outline"
+              className={`px-3 w-fit md:mt-3 py-1 text-sm font-medium ${statusColors[borrower.status as keyof typeof statusColors]}`}
+            >
+              {borrower.status}
+            </Badge>
           </div>
-          <Badge 
-            variant="outline" 
-            className={`px-3 py-1 text-sm font-medium ${statusColors[borrower.status as keyof typeof statusColors]}`}
-          >
-            {borrower.status}
-          </Badge>
+          <div className="flex flex-col justify-start mt-2 md:mt-1 text-slate-600">
+            <span className="flex items-center text-[16px]">
+              <Mail className="h-4 w-4 mr-1 text-slate-400" />
+              {borrower.email}
+            </span>
+            <span className="flex items-center text-[16px]">
+              <Phone className="h-4 w-4 mr-1 text-slate-400" />
+              {borrower.phone}
+            </span>
+          </div>
+          <p className="text-xl font-bold text-blue-900 mt-3">
+            ${borrower.loan_amount?.toLocaleString()}
+          </p>
         </div>
+
       </div>
 
       <Accordion type="single" collapsible defaultValue="item-1" className="border border-slate-200 rounded-lg">
         <AccordionItem value="item-1" className="border-b-0">
           <AccordionTrigger className="px-4 py-3 text-lg font-semibold bg-slate-50 rounded-t-lg hover:no-underline">
-            <div className="flex items-center">
+            <div className="w-full flex xs:flex-col xs:justify-start items-center xs:items-start gap-4 xs:gap-2">
               <span>AI Explainability</span>
               {borrower.ai_flags && borrower.ai_flags.length > 0 && (
-                <Badge variant="destructive" className="ml-2">
+                <Badge variant="destructive" className='w-fit px-3 py-1'>
                   {borrower.ai_flags.length} Issues
                 </Badge>
               )}
@@ -100,10 +101,10 @@ export const BorrowerDetail = ({ borrower }: BorrowerDetailProps) => {
                   <p className="text-green-800 text-sm">No issues detected</p>
                 </div>
               )}
-              
-              <div className="flex gap-2 mt-4 flex-wrap">
-                <Button 
-                  variant="outline" 
+
+              <div className="w-full grid 2xl:grid-cols-3 md:grid-cols-3 grid-cols-1 gap-2 mt-4">
+                <Button
+                  variant="outline"
                   size="sm"
                   onClick={() => handleAction('requestDocuments')}
                   className="flex items-center gap-1"
@@ -111,8 +112,8 @@ export const BorrowerDetail = ({ borrower }: BorrowerDetailProps) => {
                   <Download className="h-4 w-4" />
                   Request Documents
                 </Button>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   size="sm"
                   onClick={() => handleAction('sendToValuer')}
                   className="flex items-center gap-1"
@@ -120,7 +121,7 @@ export const BorrowerDetail = ({ borrower }: BorrowerDetailProps) => {
                   <Send className="h-4 w-4" />
                   Send to Valuer
                 </Button>
-                <Button 
+                <Button
                   size="sm"
                   onClick={() => handleAction('approveLoan')}
                   className="flex items-center gap-1 bg-green-600 hover:bg-green-700"
@@ -136,7 +137,7 @@ export const BorrowerDetail = ({ borrower }: BorrowerDetailProps) => {
 
       <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
         <h3 className="text-lg font-semibold mb-4 text-slate-900">Loan Summary</h3>
-        <div className="grid grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-2 xs:grid-cols-1 lg:grid-cols-1 gap-4 mb-4">
           <div className="bg-white p-3 rounded border border-slate-200">
             <p className="text-sm text-slate-500 mb-1">Employment</p>
             <p className="font-medium text-slate-900">{borrower.employment || 'N/A'}</p>
@@ -165,7 +166,7 @@ export const BorrowerDetail = ({ borrower }: BorrowerDetailProps) => {
           </div>
         )}
 
-        <Button 
+        <Button
           className="w-full bg-blue-600 hover:bg-blue-700 flex items-center gap-2"
           onClick={() => handleAction('escalate')}
           disabled={!borrower.risk_signal || borrower.risk_signal === 'None'}
@@ -177,16 +178,16 @@ export const BorrowerDetail = ({ borrower }: BorrowerDetailProps) => {
 
       <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
         <h3 className="text-lg font-semibold mb-3 text-slate-900">Contact Borrower</h3>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" className="flex-1 flex items-center gap-2">
+        <div className="grid grid-cols-3 xs:grid-cols-1 gap-2">
+          <Button variant="outline" size="sm">
             <Phone className="h-4 w-4" />
             Call
           </Button>
-          <Button variant="outline" size="sm" className="flex-1 flex items-center gap-2">
+          <Button variant="outline" size="sm">
             <Mail className="h-4 w-4" />
             Email
           </Button>
-          <Button variant="outline" size="sm" className="flex-1 flex items-center gap-2">
+          <Button variant="outline" size="sm">
             <MessageSquare className="h-4 w-4" />
             Message
           </Button>

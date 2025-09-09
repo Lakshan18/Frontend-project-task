@@ -4,9 +4,11 @@ import { Toggle } from '@/components/ui/toggle';
 import { Phone, Mail, MessageSquare } from 'lucide-react';
 import { useApiData } from '@/hooks/useApiData';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useState } from 'react';
 
 export const BrokerOverview = () => {
   const { brokerData, workflowData } = useApiData();
+  const [isAIAssistantEnabled, setIsAIAssistantEnabled] = useState(false);
 
   if (!brokerData || !workflowData) {
     return (
@@ -27,12 +29,17 @@ export const BrokerOverview = () => {
     );
   }
 
+  const handleAIAssistantToggle = () => {
+    setIsAIAssistantEnabled(!isAIAssistantEnabled);
+    console.log(`AI Assistant ${!isAIAssistantEnabled ? 'enabled' : 'disabled'}`);
+  };
+
   return (
     <div className="space-y-6">
       <div>
         <h2 className="text-xl font-bold text-slate-900 mb-4">{brokerData.name}</h2>
         
-        <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-3 xs:grid-cols-1 lg:grid-cols-1 gap-4 mb-6">
           <Card>
             <CardContent className="p-4 text-center">
               <p className="text-2xl font-bold text-slate-900">{brokerData.deals}</p>
@@ -53,17 +60,17 @@ export const BrokerOverview = () => {
           </Card>
         </div>
 
-        <div className="flex gap-2 mb-6">
+        <div className="grid grid-cols-3 xs:grid-cols-1 w-full gap-2 mb-6">
           <Button variant="outline" size="sm" className="flex-1">
-            <Phone className="h-4 w-4 mr-2" />
+            <Phone className="h-4 w-4" />
             Call
           </Button>
           <Button variant="outline" size="sm" className="flex-1">
-            <Mail className="h-4 w-4 mr-2" />
+            <Mail className="h-4 w-4" />
             Email
           </Button>
           <Button variant="outline" size="sm" className="flex-1">
-            <MessageSquare className="h-4 w-4 mr-2" />
+            <MessageSquare className="h-4 w-4" />
             Chat
           </Button>
         </div>
@@ -89,8 +96,14 @@ export const BrokerOverview = () => {
 
       <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200">
         <span className="text-sm font-medium text-slate-900">E Ardsassist</span>
-        <Toggle variant="outline" aria-label="Toggle AI assistant">
-          <span className="text-sm">Enabled</span>
+        <Toggle 
+          variant="outline" 
+          aria-label="Toggle AI assistant"
+          pressed={isAIAssistantEnabled}
+          onPressedChange={setIsAIAssistantEnabled}
+          onClick={handleAIAssistantToggle}
+        >
+          <span className="text-sm">{isAIAssistantEnabled ? 'Enabled' : 'Disabled'}</span>
         </Toggle>
       </div>
     </div>

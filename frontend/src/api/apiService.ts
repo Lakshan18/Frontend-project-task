@@ -12,33 +12,32 @@ const findEndpoint = (url: string, method: string = 'GET') => {
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-const createBorrowerDatabase = () => {
-  const pipelineEndpoint = findEndpoint('/api/borrowers/pipeline');
-  const detailEndpoint = findEndpoint('/api/borrowers/{id}');
+const createBorrowerContactInfo = (borrower: Borrower) => {
+  const name = borrower.name.toLowerCase();
   
-  if (!pipelineEndpoint || !detailEndpoint) return {};
-  
-  const allBorrowers: Borrower[] = [
-    ...pipelineEndpoint.response.new,
-    ...pipelineEndpoint.response.in_review,
-    ...pipelineEndpoint.response.approved
-  ];
-  
-  const borrowerDatabase: Record<string, Borrower> = {};
-  
-  allBorrowers.forEach(borrower => {
-    borrowerDatabase[borrower.id] = {
-      ...detailEndpoint.response, 
-      ...borrower,              
-      email: `${borrower.name.toLowerCase().replace(' ', '.')}@example.com`,
-      phone: `(555) ${100 + parseInt(borrower.id)}-${1000 + parseInt(borrower.id)}`
-    };
-  });
-  
-  return borrowerDatabase;
+  switch(borrower.id) {
+    case '1':
+      return {
+        email: 'sarah.dunn@200.com',
+        phone: '(355)123-4557'
+      };
+    case '2':
+      return {
+        email: 'alan.matthews@678.com',
+        phone: '(355)123-4558'
+      };
+    case '3': 
+      return {
+        email: 'lisa.carter@123.com', 
+        phone: '(355)123-4559'
+      };
+    default:
+      return {
+        email: `${name.replace(' ', '.')}@example.com`,
+        phone: `(555) ${100 + parseInt(borrower.id)}-${1000 + parseInt(borrower.id)}`
+      };
+  }
 };
-
-const borrowerDatabase = createBorrowerDatabase();
 
 export const apiService = {
   getBorrowerPipeline: async (): Promise<Pipeline> => {
@@ -49,7 +48,45 @@ export const apiService = {
 
   getBorrowerDetail: async (id: string): Promise<Borrower | null> => {
     await delay(200);
-    return borrowerDatabase[id] || null;
+    
+    const pipelineEndpoint = findEndpoint('/api/borrowers/pipeline');
+    if (!pipelineEndpoint) return null;
+    
+    const allBorrowers = [
+      ...pipelineEndpoint.response.new,
+      ...pipelineEndpoint.response.in_review,
+      ...pipelineEndpoint.response.approved
+    ];
+    
+    const borrowerFromPipeline = allBorrowers.find(b => b.id === id);
+    if (!borrowerFromPipeline) return null;
+    
+    const detailEndpoint = findEndpoint('/api/borrowers/{id}');
+    if (!detailEndpoint) return null;
+    
+    const contactInfo = createBorrowerContactInfo(borrowerFromPipeline);
+    
+    const borrowerDetail: Borrower = {
+      ...borrowerFromPipeline,
+      
+      email: contactInfo.email,
+      phone: contactInfo.phone,
+      loan_amount: borrowerFromPipeline.amount, 
+      
+      employment: detailEndpoint.response.employment || '',
+      income: detailEndpoint.response.income || 0,
+      existing_loan: detailEndpoint.response.existing_loan || 0,
+      credit_score: detailEndpoint.response.credit_score || 0,
+      source_of_funds: detailEndpoint.response.source_of_funds || '',
+      risk_signal: id === '1' 
+        ? detailEndpoint.response.risk_signal 
+        : 'No risk assessment available',
+      ai_flags: id === '1' 
+        ? detailEndpoint.response.ai_flags 
+        : ['Data pending review']
+    };
+    
+    return borrowerDetail;
   },
 
   getBrokerInfo: async (): Promise<Broker | null> => {

@@ -33,7 +33,7 @@ function App() {
         </div>
       </header>
 
-      <main className="p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+      <main className="px-3 py-5 grid xs:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 grid-cols-3 gap-6 max-w-full mx-auto">
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
           <BorrowerPipeline />
         </div>

@@ -29,7 +29,7 @@ export const BorrowerCard = ({ borrower, onSelect, isSelected }: BorrowerCardPro
     >
       <div className="flex justify-between items-start">
         <div className="flex-1">
-          <h3 className="font-semibold text-slate-900">{borrower.name}</h3>
+          <h3 className="font-semibold text-[18px] text-slate-900">{borrower.name}</h3>
           <p className="text-sm text-slate-600 mt-1">{borrower.loan_type}</p>
         </div>
         <div className="text-right">
